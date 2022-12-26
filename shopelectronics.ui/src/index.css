@@ -1,0 +1,168 @@
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+h1,
+h2,
+h3 {
+    margin: 0.5rem 0;
+}
+
+h1 {
+    font-size: 1.5rem;
+}
+
+h2 {
+    font-size: 1.2rem;
+}
+
+h3 {
+    font-size: 1rem;
+}
+
+a {
+    text-decoration: none;
+}
+
+.mainRow {
+    display: flex;
+}
+
+.row.center {
+    align-items: center;
+}
+
+.product {
+    width: 330px;
+    text-align: center;
+    padding: 5px;
+}
+
+.product-3 {
+    flex: 3;
+}
+.categories{
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+}
+.category{
+    width: 330px;
+    padding: 5px;
+    text-align: center;
+}
+
+.productlist {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.cart {
+    flex: 1;
+}
+.cartText{
+    flex: 1;
+    width: 310px;
+}
+
+.cartRow {
+     --bs-gutter-x: 0; 
+    --bs-gutter-y: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: calc(-1 * var(--bs-gutter-y));
+    margin-right: calc(-0.5 * var(--bs-gutter-x));
+    margin-left: calc(-0.5 * var(--bs-gutter-x));
+}
+
+.block {
+    /*background-color: #e0e0e0;*/
+    padding: 2rem;
+    /*margin: 0.5rem;*/
+    border-radius: 0.5rem;
+}
+
+.text-right {
+    text-align: right;
+}
+
+img.small {
+    height: 15rem;
+}
+
+button.add {
+    background-color: #40c0f0;
+    margin-left: 5px;
+    width: 2rem;
+}
+
+button.remove {
+    background-color: #f04040;
+    width: 2rem;
+}
+
+button.badge {
+    background-color: #f04040;
+    border: none;
+    color: #ffffff;
+    width: 1.5rem;
+}
+
+.App {
+    background-color: white;
+}
+
+.Auth-form-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    height: auto;
+    margin-top: 6rem;
+    /*width: 100vw;*/
+    /*height: 100vh;*/
+}
+
+.Auth-form {
+    width: 420px;
+    box-shadow: rgb(0 0 0 / 16%) 1px 1px 10px;
+    padding-top: 30px;
+    padding-bottom: 20px;
+    border-radius: 8px;
+    background-color: white;
+}
+
+.Auth-form-content {
+    width: 420px;
+    padding-left: 12%;
+    padding-right: 12%;
+}
+.or{
+    padding: 0 20px 0 20px;
+}
+
+.Auth-form-title {
+    text-align: center;
+    margin-bottom: 1em;
+    font-size: 24px;
+    color: rgb(34, 34, 34);
+    font-weight: 800;
+}
+
+label {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgb(34, 34, 34);
+}
