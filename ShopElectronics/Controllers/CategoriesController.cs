@@ -15,12 +15,10 @@ namespace ShopElectronics.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly IProductCategoryService _productCategoryService;
-        private readonly IProductService _productService;
 
-        public CategoriesController(IProductCategoryService productCategoryService, IProductService productService)
+        public CategoriesController(IProductCategoryService productCategoryService)
         {
             _productCategoryService = productCategoryService;
-            _productService = productService;
         }
         
         [HttpGet("{id}")]

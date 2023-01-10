@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using ShopElectronics.Data.Entities;
 using ShopElectronics.Services.Models.Dto;
 using ShopElectronics.Services.Services.Interfaces;
 

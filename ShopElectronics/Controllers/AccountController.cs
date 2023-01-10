@@ -1,19 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using ShopElectronics.Authentication;
 using ShopElectronics.Services.Models.Dto;
 using ShopElectronics.Services.Services.Interfaces;
@@ -97,22 +84,5 @@ namespace ShopElectronics.Controllers
                 AccessToken = jwtResult.AccessToken,
             });
         }
-        
-        
-        
-        // [HttpGet("user")]
-        // [Authorize]
-        // public async ActionResult GetCurrentUser()
-        // {
-        //     // var temp = new AuthResultDto()
-        //     // {
-        //     //     UserName = User.Identity?.Name,
-        //     //     AccessToken = _jwtAuthManager.GenerateTokens(User.Identity?.Name, new []{})
-        //     // };
-        //     return Ok(new AuthResultDto
-        //     {
-        //         UserName = User.Identity?.Name
-        //     });
-        // }
     }
 }

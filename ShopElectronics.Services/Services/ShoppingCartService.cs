@@ -52,18 +52,6 @@ public class ShoppingCartService : IShoppingCartService
         return _autoMapper.Map<CartItemViewModel>(temp);
     }
 
-    // public Task<CartItemViewModel> DeleteItem(int id)
-    // {
-    //     _cartRepository.DeleteItem(id);
-    //     return null;
-    // }
-
-    public async Task<CartItemViewModel> GetItem(int id)
-    {
-        var temp = await _cartRepository.GetItem(id);
-        return _autoMapper.Map<CartItemViewModel>(temp);
-    }
-
     public async Task<ICollection<CartItemViewModel>> GetItems(string username)
     {
         var user = await _userRepository.GetUser(username, String.Empty);

@@ -39,17 +39,6 @@ export default function Cart(props) {
     function closeModal() {
         setIsOpen(false);
     }
-    
-    // const [userLoggedIn, setUserLoggedIn] = useState(false);
-    //
-    // useEffect(
-    //     ()=> {
-    //         if (localStorage.getItem("username").length !== 0 ){
-    //             setUserLoggedIn(true);
-    //         }
-    //     }
-    //    
-    // )
 
     function CheckoutHandler() {
         if (username !== null){
@@ -116,13 +105,6 @@ export default function Cart(props) {
                         </div>
                         <hr/>
                         
-                        {/*<label*/}
-                        {/*    className="alert alert-danger" role="alert"*/}
-                        {/*    hidden={username === null ? false : true}*/}
-                        {/*>*/}
-                        {/*    You need to log in to checkout*/}
-                        {/*</label>*/}
-                        
                         <div className="row">
                             
                             <Button
@@ -145,9 +127,6 @@ export default function Cart(props) {
                                     
                                 </AuthPage>
                             </Modal>
-                            
-                            
-                            
                         </div>
                     </>
                 )}

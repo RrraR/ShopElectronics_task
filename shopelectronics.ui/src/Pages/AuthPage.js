@@ -70,10 +70,6 @@ export const AuthPage = (props) => {
                 }))
             ).then(r => r.status === 200 ? window.location.reload(false) :  console.log(r))
         }
-
-        // console.log(localStorage.getItem("username"))
-        // console.log(localStorage.getItem("token"))
-
         setUsernameInput('');
         setPasswordInput('');
         
@@ -84,10 +80,6 @@ export const AuthPage = (props) => {
         setUsernameInput('');
         setPasswordInput('');
     }
-
-    // function refreshPage(){
-    //     window.location.reload(false);
-    // }
 
 
     if (authMode === "login") {

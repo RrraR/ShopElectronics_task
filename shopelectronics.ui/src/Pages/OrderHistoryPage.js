@@ -6,9 +6,6 @@ import Header from "../Components/Header";
 
 function OrderHistoryPage() {
     const [orders, setOrders] = useState([])
-    // const [books, setBooks] = useState([]);
-    // const [bookList, setBookList] = useState([]);
-    // const [query, setQuery] = useState('');
 
     useEffect(() => {
         api.post('Orders/getOrders', {
@@ -25,23 +22,6 @@ function OrderHistoryPage() {
                 // always executed
             });
     }, [])
-
-    // function search(books) {
-    //     const search_parameters = ["name"];
-    //     return books.filter(
-    //         (book) =>
-    //             search_parameters.some((parameter) =>
-    //                 book[parameter].toString().toLowerCase().includes(query)
-    //             )
-    //     );
-    // }
-    //
-    // function setQueryHandler(e) {
-    //     const data = Object.values(bookList)
-    //
-    //     setQuery(e.target.value)
-    //     setBooks(search(data))
-    // }
 
     const renderItemsRow = item => (
         <tr key={item.productId}>

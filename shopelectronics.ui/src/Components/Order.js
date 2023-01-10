@@ -21,11 +21,11 @@ export default function Order(props) {
         <tr key={order.orderId}>
             <td>
                 <Form.Select onChange={event => showOrderStatusHandler(event, order)} value={status} aria-label="Default select example">
-                    {/*<option value={order.orderStatusId}>{order.orderStatus}</option>*/}
                     {orderStatusesList.map(
                         c => (<option key={c.id} value={c.name}>{c.name}</option>))}
                 </Form.Select>
             </td>
+            <td>{order.username}</td>
             <Table>
                 <thead>
                 <tr>

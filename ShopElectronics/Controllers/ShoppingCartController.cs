@@ -1,12 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using ShopElectronics.Data.Repositories.Interfaces;
 using ShopElectronics.Services.Models.Dto;
 using ShopElectronics.Services.Models.ViewModels;
 using ShopElectronics.Services.Services.Interfaces;
@@ -28,7 +21,6 @@ namespace ShopElectronics.Controllers
         
         [HttpPost]
         [Route("shop/checkout")]
-        // [Authorize]
         public async Task<IActionResult> Checkout([FromBody]List<OrderItemsToAddDto> OrderItems)
         {
             var res = await _orderService.AddOrder(OrderItems);

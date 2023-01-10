@@ -17,8 +17,7 @@ function ShopPage() {
 
     const [searchQuery, setSearchQuery] = useState('');
     const [filterQuery, setFilterQuery] = useState('');
-
-
+    
     const [currentPage, setCurrentPage] = useState(1);
     const [recordsPerPage] = useState(2);
     const indexOfLastRecord = currentPage * recordsPerPage;
@@ -26,20 +25,8 @@ function ShopPage() {
     const currentRecords = products.slice(indexOfFirstRecord,
         indexOfLastRecord);
     const nPages = Math.ceil(products.length / recordsPerPage)
-
-
-    const [minPrice, setMinPrice] = useState(0);
-    const [maxPrice, setMaxPrice] = useState(0);
-
-
-    // const [brand, setBrand] = useState('');
-    // const [allBrands, setAllBrands] = useState(products.map(
-    //     (item) => ({
-    //             name: item.brandName
-    //     }
-    //     )
-    // ))
-
+    // let brands = [];
+    
 
     useEffect(() => {
         api.get(`Product/category/${id}/products`)
@@ -77,25 +64,10 @@ function ShopPage() {
     }, []);
     
     // useEffect(()=>{
-    //     // getProducts()
-    // }, [filterQuery, minPrice, maxPrice])
-
-
-    // const getProducts = () => {
-    //     const params = new URLSearchParams();
-    //     params.append('brandName', filterQuery);
-    //     params.append('minPrice', minPrice.toString());
-    //     params.append('maxPrice', maxPrice.toString());
-    //
-    //    
-    //     api.get(`Product/category/${id}/products?${params}`)
-    //         .then(r => setProducts(r.data))
-    //         .catch(function (error) {
-    //         console.log(error);
-    //         });
-    //
-    //
-    // }
+    //     brands = [...new Set(searchProductList.flatMap(({brandName}) => brandName))]
+    //     console.log(brands)
+    // }, [searchProductList])
+    
 
     const onAdd = (product) => {
         const exist = cartItems.find((x) => x.productId === product.productId);
@@ -182,7 +154,7 @@ function ShopPage() {
 
 
     function filter(productsToFilter) {
-        const filter_parameters = ["name", "description", "brandName"];
+        const filter_parameters = ["brandName"];
         return productsToFilter.filter(
             (product) =>
                 filter_parameters.some((parameter) =>
@@ -214,24 +186,6 @@ function ShopPage() {
                             <option key={c.productId} value={c.brandName.toString().toLowerCase()}>{c.brandName.toString().toLowerCase()}</option>))
                     }
                 </Form.Select>
-                
-                {/*<input*/}
-                {/*    name="min-price"*/}
-                {/*    id="min-price"*/}
-                {/*    className="min-price"*/}
-                {/*    type="number"*/}
-                {/*    placeholder='min price'*/}
-                {/*    onInput={(e) => setMinPrice(e.target.value)}*/}
-                {/*/>*/}
-                
-                {/*<input*/}
-                {/*    name="max-price"*/}
-                {/*    id="max-price"*/}
-                {/*    className="max-price"*/}
-                {/*    type="number"*/}
-                {/*    placeholder='max price'*/}
-                {/*    onInput={e => setMaxPrice(e.target.value)}*/}
-                {/*/>*/}
 
 
             </div>

@@ -52,27 +52,11 @@ namespace ShopElectronics.Data.Repositories
                         p.CartId == item.CartId
                         && p.ProductId == item.ProductId);
                     temp.Qwt = temp.Qwt + item.Qwt;
-
-                    // if (temp != null)
-                    // {
-                    //     await _shopElectronicsDbContext.SaveChangesAsync();
-                    //     return await _shopElectronicsDbContext.CartItems.FirstOrDefaultAsync(p =>
-                    //         p.CartId == temp.CartId
-                    //         && p.ProductId == temp.ProductId);
-                    // }
                 }
             }
             
             await _shopElectronicsDbContext.SaveChangesAsync();
-
-            // var test = await _shopElectronicsDbContext.CartItems.ToListAsync();
-
             var result = await GetItems(user.Id);
-            
-            // var result = await _shopElectronicsDbContext.CartItems.Where(p => 
-            //     p.CartId == user.Cart.Id).ToListAsync();
-
-            // return result.Any() ? result : null;
             return result.Any();
         }
 
@@ -116,12 +100,6 @@ namespace ShopElectronics.Data.Repositories
 
             return !_shopElectronicsDbContext.CartItems.Any(i => i.Cart.UserId == ItemsToDelete.First().Order.UserId);
         }
-
-        // public async void DeleteItemsOnOrder(ICollection<OrderItems> ItemsToDelete);
-        // {
-        //     var item = await _shopElectronicsDbContext.CartItems.FirstOrDefaultAsync(i => i.Id == id);
-        //     // var item = await _shopElectronicsDbContext.CartItems.FindAsync(id);
-        // }
 
         public async Task<CartItem> GetItem(int id)
         {

@@ -5,12 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ShopElectronics.Authentication;
 using ShopElectronics.Data;
-using ShopElectronics.Data.Entities;
 using ShopElectronics.Data.Repositories;
 using ShopElectronics.Data.Repositories.Interfaces;
 using ShopElectronics.Services.Services;
 using ShopElectronics.Services.Services.Interfaces;
-using Newtonsoft.Json;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -46,7 +44,6 @@ builder.Services.AddTransient<IProductCategoryService, ProductCategoryService>()
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IOrderService, OrderService>();
 
-
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<ICartRepository, CartRepository>();
 builder.Services.AddTransient<IProductCategoryRepository, ProductCategoryRepository>();
@@ -75,8 +72,7 @@ builder.Services.AddAuthentication(x =>
         ClockSkew = TimeSpan.FromMinutes(1)
     };
 });
-builder.Services.AddSingleton<JwtAuthManager>();
-//builder.Services.AddHostedService<JwtRefreshTokenCache>();
+builder.Services.AddSingleton<JwtAuthManager>(); ;
 
 
 var app = builder.Build();

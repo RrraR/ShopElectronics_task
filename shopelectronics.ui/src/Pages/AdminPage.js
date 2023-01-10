@@ -30,8 +30,6 @@ function AdminPage() {
     }, [])
     
     function changeState(id, status){
-       // let orderToChange = orders.find(o => o.orderId === id);
-        
         const exist = ordersToChange.find( (x) => x.orderId === id);
         if (exist) {
             setOrdersToChange(
@@ -67,6 +65,7 @@ function AdminPage() {
                 <thead>
                 <tr>
                     <th>Order status</th>
+                    <th>Username</th>
                     <th>Items in order</th>
                 </tr>
                 </thead>

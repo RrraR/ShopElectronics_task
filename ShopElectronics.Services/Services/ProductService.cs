@@ -10,14 +10,11 @@ public class ProductService : IProductService
 {
     private readonly IMapper _autoMapper;
     private readonly IProductRepository _productRepositiry;
-    private readonly IProductCategoryRepository _productCategoryRepository;
 
-    public ProductService(IProductRepository productRepositiry, IMapper autoMapper,
-        IProductCategoryRepository productCategoryRepository)
+    public ProductService(IProductRepository productRepositiry, IMapper autoMapper)
     {
         _productRepositiry = productRepositiry;
         _autoMapper = autoMapper;
-        _productCategoryRepository = productCategoryRepository;
     }
 
     public async Task<ProductViewModel> GetItem(int id)

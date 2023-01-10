@@ -62,13 +62,5 @@ public class UserRepository : IUserRepository
         
         var user = await _shopElectronicsDbContext.Users.FirstOrDefaultAsync(u => u.UserName == username);
         return user;
-        // var newCart = new Cart()
-        // {
-        //     UserId = _shopElectronicsDbContext.Users.FirstOrDefault(u => u.UserName == username).Id
-        // };
-        // await _shopElectronicsDbContext.Carts.AddAsync(newCart);
-        // await _shopElectronicsDbContext.SaveChangesAsync();
-
-        // return await _shopElectronicsDbContext.Users.FirstOrDefaultAsync(u => u.UserName == username);
     }
 }

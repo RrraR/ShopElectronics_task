@@ -53,12 +53,6 @@ export default function Header(props) {
                             : <></>
                         }
                         
-                        {/*<Link to={history.go(-1)}>*/}
-                        {/*    Cart{' '}*/}
-                        {/*    {props.countCartItems ? (*/}
-                        {/*        <button className="badge">{props.countCartItems}</button>) : ''}*/}
-                        {/*</Link>*/}
-                        
                         <Nav.Link href="#/">
                             {/*<Link to={'/cart'}>*/}
                             Cart{' '}
