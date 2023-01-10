@@ -4,7 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import {Button} from "react-bootstrap";
+import {Link} from "react-router-dom";
 
 export default function Header(props) {
     const username = localStorage.getItem("username");
@@ -13,6 +13,7 @@ export default function Header(props) {
     function logOutHandler() {
         localStorage.removeItem("username");
         localStorage.removeItem("token");
+        window.location.reload(false);
     }
 
     return (
@@ -47,6 +48,17 @@ export default function Header(props) {
 
                     <Nav className="justify-content-end">
 
+                        {username === 'admin' 
+                            ? <Link to={`/adminPage`} className="btn btn-primary">Admin Panel</Link>
+                            : <></>
+                        }
+                        
+                        {/*<Link to={history.go(-1)}>*/}
+                        {/*    Cart{' '}*/}
+                        {/*    {props.countCartItems ? (*/}
+                        {/*        <button className="badge">{props.countCartItems}</button>) : ''}*/}
+                        {/*</Link>*/}
+                        
                         <Nav.Link href="#/">
                             {/*<Link to={'/cart'}>*/}
                             Cart{' '}
@@ -56,19 +68,23 @@ export default function Header(props) {
                         </Nav.Link>
 
                         {username === null
-                            ? (<Nav.Link onClick={() => {window.location = "/"}}>Log in</Nav.Link>)
-                            : (<div>
-                                <Nav.Link onClick={() => {
-                                    window.location = "/"
-                                }}>{localStorage.getItem("username")}</Nav.Link>
-                                <Button onClick={logOutHandler}>Log Out</Button>
-                            </div>)
+                            ? (<Nav.Link 
+                                onClick={() => {window.location = ".."}}
+                            >Log in</Nav.Link>)
+                            : (
+                                <NavDropdown title={localStorage.getItem("username")} >
+                                    <NavDropdown.Item onClick={logOutHandler}>
+                                        Log Out
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item onClick={() => {
+                                        window.location = "../orderHistory"
+                                    }}>
+                                        Order History
+                                    </NavDropdown.Item>
+                                </NavDropdown>)
                         }
 
                     </Nav>
-
-                    
-
                 </Navbar.Collapse>
             </Container>
         </Navbar>

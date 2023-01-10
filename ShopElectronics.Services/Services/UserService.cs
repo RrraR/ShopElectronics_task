@@ -34,4 +34,35 @@ public class UserService : IUserService
 
         return true;
     }
+    
+    public async Task<bool> IsAnExistingUser(string username)
+    {
+        return await _userRepository.CheckIfExistingUser(username);
+    }
+    
+    public async Task<string> GetUserRole(string userName)
+    {
+        if (!IsAnExistingUser(userName).Result)
+        {
+            return string.Empty;
+        }
+
+        return userName == "admin" ? UserRoles.Admin : UserRoles.BasicUser;
+    }
+
+    public async Task<UserDto> RegisterUser(string username, string password)
+    { 
+       var user = await _userRepository.RegisterUser(username, password);
+
+        if (!IsAnExistingUser(user.UserName).Result) return null;
+        
+        // var user = await _userRepository.GetUser(username, password);
+        return _autoMapper.Map<UserDto>(user);
+    }
+}
+
+public static class UserRoles
+{
+    public const string Admin = nameof(Admin);
+    public const string BasicUser = nameof(BasicUser);
 }

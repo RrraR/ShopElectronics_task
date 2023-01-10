@@ -3,7 +3,6 @@ import api from "../api";
 import Header from "../Components/Header";
 import {Link, useParams} from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.css';
-import {Button} from "react-bootstrap";
 
 function Categories() {
     const [categories, setCategories] = useState([]);

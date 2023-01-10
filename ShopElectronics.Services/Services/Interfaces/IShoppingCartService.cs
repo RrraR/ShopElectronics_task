@@ -5,9 +5,9 @@ namespace ShopElectronics.Services.Services.Interfaces;
 
 public interface IShoppingCartService
 {
-    Task<CartItemViewModel> AddItem(CartItemToAddDto cartItemToAddDto);
+    Task<CartItemViewModel> AddItem(List<CartItemToAddDto> cartItemsToAddDto);
     Task<CartItemViewModel> UpdateQty(CartItemToUpdDto cartItemQtyUpdateDto);
-    Task<CartItemViewModel> DeleteItem(int id);
+    // Task<CartItemViewModel> DeleteItem(int id);
     Task<CartItemViewModel> GetItem(int id);
-    Task<ICollection<CartItemViewModel>> GetItems(int userId);
+    Task<ICollection<CartItemViewModel>> GetItems(string username);
 }

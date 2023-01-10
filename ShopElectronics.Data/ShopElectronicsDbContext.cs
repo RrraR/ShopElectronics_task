@@ -15,7 +15,18 @@ namespace ShopElectronics.Data
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<ProductCategory> ProductCategories { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
+
         public virtual DbSet<Category> Categories { get; set; } = null!;
+
+        public virtual DbSet<Orders> Orders { get; set; } = null!;
+        
+        public virtual DbSet<OrderItems> OrderItems { get; set; } = null!;
+        
+        public virtual DbSet<OrderStatuses> OrderStatuses { get; set; } = null!;
+        public virtual DbSet<Brands> Brands { get; set; } = null!;
+
+
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder.UseLazyLoadingProxies();
@@ -59,15 +70,18 @@ namespace ShopElectronics.Data
                     .HasForeignKey(d => d.CategoryId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Product_ProductCategory");
+                
+                entity.HasOne(d => d.Brands)
+                    .WithMany(p => p.Products)
+                    .HasForeignKey(d => d.BrandId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Product_Brands");
             });
-            
+
             modelBuilder.Entity<User>(entity => { entity.Property(c => c.Id).ValueGeneratedOnAdd(); });
-            
-            modelBuilder.Entity<Category>(entity =>
-            {
-                entity.Property(c => c.Id).ValueGeneratedOnAdd();
-            });
-            
+
+            modelBuilder.Entity<Category>(entity => { entity.Property(c => c.Id).ValueGeneratedOnAdd(); });
+
 
             modelBuilder.Entity<ProductCategory>(entity =>
             {
@@ -79,6 +93,48 @@ namespace ShopElectronics.Data
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ProductCategory_Categories");
             });
+
+            modelBuilder.Entity<Orders>(entity =>
+            {
+                entity.Property(c => c.Id).ValueGeneratedOnAdd();
+
+                entity.HasOne(d => d.User)
+                    .WithMany(u => u.Orders)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Orders_User");
+
+                entity.HasOne(d => d.OrderStatus)
+                    .WithMany(u => u.Orders)
+                    .HasForeignKey(d => d.OrderStatusId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Orders_OrderStatus");
+            });
+
+            modelBuilder.Entity<OrderItems>(entity =>
+            {
+                entity.Property(c => c.Id).ValueGeneratedOnAdd();
+
+                entity.HasOne(d => d.Order)
+                    .WithMany(p => p.OrderItems)
+                    .HasForeignKey(d => d.OrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OrderItems_Orders");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.OrderItems)
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_OrderItems_Product");
+            });
+            
+            modelBuilder.Entity<Brands>(entity =>
+            {
+                entity.Property(c => c.Id).ValueGeneratedOnAdd();
+            });
+
+            modelBuilder.Entity<OrderStatuses>(entity => { entity.Property(c => c.Id).ValueGeneratedOnAdd(); });
+
 
             // OnModelCreatingPartial(modelBuilder);
         }

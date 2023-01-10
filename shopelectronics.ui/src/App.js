@@ -1,10 +1,11 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 
-import ProductPage from "./Pages/ProductPage";
-import ShoppingCart from "./Pages/ShoppingCart";
 import StartPage from "./Pages/StartPage";
 import Categories from "./Pages/Categories";
 import ShopPage from "./Pages/ShopPage";
+import AdminPage from "./Pages/AdminPage";
+import OrderHistoryPage from "./Pages/OrderHistoryPage";
+// import AuthPage from "./Pages/AuthPage";
 
 export default function App() {
     return (
@@ -12,9 +13,10 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<StartPage/>}/>
                 <Route path="/category/:id" element={<Categories/>}/>
+                {/*<Route path="/auth" element={<AuthPage/>}></Route>*/}
+                <Route path="/orderHistory" element={<OrderHistoryPage/>}/>
+                <Route path="/adminPage" element={<AdminPage/>}/>
                 <Route path="/shop/:id" element={<ShopPage/>}/>
-                <Route path="/products/:id" element={<ProductPage/>}/>
-                <Route path="/cart" element={<ShoppingCart/>}/>
                 {/*<Route path="/authorization" element={<AuthorizationForm/>}/>*/}
             </Routes>
         </BrowserRouter>

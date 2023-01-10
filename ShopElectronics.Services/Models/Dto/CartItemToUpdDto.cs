@@ -2,6 +2,7 @@
 
 public class CartItemToUpdDto
 {
-    public int CartItemId { get; set; }
-    public int Qty { get; set; }
+    public string? Username { get; set; }
+    public int ProductId { get; set; }
+    public int Qwt { get; set; }
 }

@@ -24,5 +24,8 @@ namespace ShopElectronics.Data.Entities
 
         [InverseProperty("User")]
         public virtual Cart Cart { get; set; }
+        
+        [InverseProperty("User")]
+        public virtual ICollection<Orders> Orders { get; set; }
     }
 }

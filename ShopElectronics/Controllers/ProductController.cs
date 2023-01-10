@@ -25,6 +25,16 @@ namespace ShopElectronics.Controllers
             var products = await _productService.GetItems();
             return products;
         }
+        
+        
+        // [HttpGet]
+        // [Route("getBrands")]
+        // [AllowAnonymous]
+        // public async Task<ICollection<ProductViewModel>> GetAllBrands()
+        // {
+        //     var products = await _productService.GetItems();
+        //     return products;
+        // }
 
 
         [HttpGet]
@@ -35,11 +45,13 @@ namespace ShopElectronics.Controllers
             var product = await _productService.GetItem(id);
             return product;
         }
+        
 
         [HttpGet]
+        // [Route("category/{id}/products$brandName={$brandname}&minPrice={minprice}&maxPrice={maxprice}")]
         [Route("category/{id}/products")]
         [AllowAnonymous]
-        public async Task<ICollection<ProductViewModel>> GetItemsByCategory(int id)
+        public async Task<ICollection<ProductViewModel>> GetItemsByCategory(int id)//, string? brandname, string? minprice, string maxprice)
         {
             var products = await _productService.GetItemsByCategory(id);
             return products;

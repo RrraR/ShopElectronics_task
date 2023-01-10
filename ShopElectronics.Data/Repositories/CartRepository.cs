@@ -21,51 +21,107 @@ namespace ShopElectronics.Data.Repositories
                                                                            c.ProductId == productId);
         }
 
-        public async Task<CartItem> AddItem(CartItem cartItemToAddDto)
+        public async Task<bool> AddItem(ICollection<CartItem> cartItemToAddDto, User user)
         {
-            if (await CartItemExists(cartItemToAddDto.CartId, cartItemToAddDto.ProductId) == false)
+            foreach (var item in cartItemToAddDto)
             {
-                var item = await (from product in _shopElectronicsDbContext.Products
-                    where product.Id == cartItemToAddDto.ProductId
-                    select new CartItem
-                    {
-                        CartId = cartItemToAddDto.CartId,
-                        ProductId = product.Id,
-                        Qty = cartItemToAddDto.Qty
-                    }).SingleOrDefaultAsync();
+                item.CartId = user.Cart.Id;
+            }
 
-
-                if (item != null)
+            foreach (var item in cartItemToAddDto)
+            {
+                if (await CartItemExists(item.CartId, item.ProductId) == false)
                 {
-                    var result = await _shopElectronicsDbContext.CartItems.AddAsync(item);
-                    await _shopElectronicsDbContext.SaveChangesAsync();
-                    return result.Entity;
+                    var temp = await (from product in _shopElectronicsDbContext.Products
+                        where product.Id == item.ProductId
+                        select new CartItem
+                        {
+                            CartId = item.CartId,
+                            ProductId = product.Id,
+                            Qwt = item.Qwt
+                        }).SingleOrDefaultAsync();
+
+                    if (temp != null)
+                    { 
+                        _shopElectronicsDbContext.CartItems.Add(item);
+                    }
+                }
+                else
+                {
+                    var temp = await _shopElectronicsDbContext.CartItems.FirstOrDefaultAsync(p =>
+                        p.CartId == item.CartId
+                        && p.ProductId == item.ProductId);
+                    temp.Qwt = temp.Qwt + item.Qwt;
+
+                    // if (temp != null)
+                    // {
+                    //     await _shopElectronicsDbContext.SaveChangesAsync();
+                    //     return await _shopElectronicsDbContext.CartItems.FirstOrDefaultAsync(p =>
+                    //         p.CartId == temp.CartId
+                    //         && p.ProductId == temp.ProductId);
+                    // }
                 }
             }
+            
+            await _shopElectronicsDbContext.SaveChangesAsync();
 
-            return null;
+            // var test = await _shopElectronicsDbContext.CartItems.ToListAsync();
+
+            var result = await GetItems(user.Id);
+            
+            // var result = await _shopElectronicsDbContext.CartItems.Where(p => 
+            //     p.CartId == user.Cart.Id).ToListAsync();
+
+            // return result.Any() ? result : null;
+            return result.Any();
         }
 
-        public async Task<CartItem> UpdateQty(int id, int qwt)
+        public async Task<CartItem> UpdateQty(int cartid, int productId, int qwt)
         {
-            var item = await _shopElectronicsDbContext.CartItems.FindAsync(id);
+            var item = await _shopElectronicsDbContext.CartItems.FirstOrDefaultAsync(p =>
+                p.CartId == cartid
+                && p.ProductId == productId);
 
-            if (item != null)
+            if (item == null) return null;
+
+            if (item.Qwt == 1)
             {
-                item.Qty = qwt;
+                _shopElectronicsDbContext.CartItems.Remove(item);
                 await _shopElectronicsDbContext.SaveChangesAsync();
-                return item;
+                // DeleteItem(item.Id);
+            }
+            else
+            {
+                item.Qwt = item.Qwt - qwt;
+                await _shopElectronicsDbContext.SaveChangesAsync();
+                return await _shopElectronicsDbContext.CartItems.FirstOrDefaultAsync(p =>
+                    p.CartId == cartid
+                    && p.ProductId == productId);
             }
 
             return null;
         }
 
-        public async void DeleteItem(int id)
+        public async Task<bool> DeleteItemsOnOrder(ICollection<OrderItems> ItemsToDelete)
         {
-            var item = await _shopElectronicsDbContext.CartItems.FindAsync(id);
-            _shopElectronicsDbContext.CartItems.Remove(item);
+            var cartItemsToRemove =
+                await _shopElectronicsDbContext.CartItems.Where(i =>
+                    i.Cart.UserId == ItemsToDelete.First().Order.UserId).ToListAsync();
+            foreach (var item in cartItemsToRemove)
+            {
+                _shopElectronicsDbContext.CartItems.Remove(item);
+            }
+
             await _shopElectronicsDbContext.SaveChangesAsync();
+
+            return !_shopElectronicsDbContext.CartItems.Any(i => i.Cart.UserId == ItemsToDelete.First().Order.UserId);
         }
+
+        // public async void DeleteItemsOnOrder(ICollection<OrderItems> ItemsToDelete);
+        // {
+        //     var item = await _shopElectronicsDbContext.CartItems.FirstOrDefaultAsync(i => i.Id == id);
+        //     // var item = await _shopElectronicsDbContext.CartItems.FindAsync(id);
+        // }
 
         public async Task<CartItem> GetItem(int id)
         {
@@ -74,17 +130,8 @@ namespace ShopElectronics.Data.Repositories
 
         public async Task<ICollection<CartItem>> GetItems(int userId)
         {
-            return await (from cart in _shopElectronicsDbContext.Carts
-                join cartItem in _shopElectronicsDbContext.CartItems
-                    on cart.Id equals cartItem.CartId
-                where cart.UserId == userId
-                select new CartItem
-                {
-                    Id = cartItem.Id,
-                    ProductId = cartItem.ProductId,
-                    Qty = cartItem.Qty,
-                    CartId = cartItem.CartId
-                }).ToListAsync();
+            return await _shopElectronicsDbContext.CartItems.Include(i => i.Cart).ThenInclude(p => p.User)
+                .Where(u => u.Cart.UserId == userId).ToListAsync();
         }
     }
 }

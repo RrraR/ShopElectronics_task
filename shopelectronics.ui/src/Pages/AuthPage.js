@@ -1,62 +1,97 @@
 ﻿import React, {useState} from "react"
 import api from "../api";
 import {Button, Form} from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.css';
 
 export const AuthPage = (props) => {
-    let [authMode, setAuthMode] = useState("login")
+    const {cartItems} = props;
+    const [authMode, setAuthMode] = useState("login")
     const [userData, setUserData] = useState([]);
     const [usernameInput, setUsernameInput] = useState('');
     const [passwordInput, setPasswordInput] = useState('');
+    const [dataIsValid, setDataIsValid] = useState(true);
 
 
     const changeAuthMode = () => {
         setAuthMode(authMode === "login" ? "register" : "login")
     }
 
-    function registrationHandler() {
-
+    function registrationHandler(event) {
+        event.preventDefault();
+        api.post(`Account/register`,
+            {
+                username: usernameInput,
+                password: passwordInput
+            })
+            .then(
+                response => response.status === 200
+                    ? setData(response.data)
+                    : console.log(response))
+            .catch(
+                () => {
+                    // console.log(error);
+                    errorInData()
+                }
+            )
     }
 
     function loginHandler(event) {
         event.preventDefault();
-        api.post(`Account/login`, 
+        api.post(`Account/login`,
             {
-            username: usernameInput,
-            password: passwordInput
-        }).then(
-            response => response.status === 200 ? setData(response.data) : console.log(response)
-                //setUserData(response.data)
-            //r => r.status === 200 ? setUserData(r.data) : console.log(r)
-        )
-        // if (userData.username !== undefined) {
-        //     setData()
-        // }
+                username: usernameInput,
+                password: passwordInput
+            })
+            .then(
+                response => response.status === 200
+                    ? setData(response.data)
+                    : console.log(response))
+            .catch(
+                () => {
+                    // console.log(error);
+                    errorInData()
+                }
+            )
     }
 
     function setData(data) {
         setUserData(data);
         localStorage.setItem("username", data.username)
         localStorage.setItem("token", data.accessToken)
+        setDataIsValid(true);
+        window.location.reload(false);
+
+        if (cartItems !== null){
+            api.post('ShoppingCart/shop/additem',
+                cartItems.map((item) => ({
+                    username: localStorage.getItem('username'),
+                    productId: item.productId,
+                    qwt: item.qwt
+                }))
+            ).then(r => r.status === 200 ? window.location.reload(false) :  console.log(r))
+        }
 
         // console.log(localStorage.getItem("username"))
         // console.log(localStorage.getItem("token"))
 
         setUsernameInput('');
         setPasswordInput('');
+        
     }
 
+    function errorInData() {
+        setDataIsValid(false);
+        setUsernameInput('');
+        setPasswordInput('');
+    }
 
-    // const passwordInputHandle = event => {
-    //     setPasswordInput(event.target.value)
+    // function refreshPage(){
+    //     window.location.reload(false);
     // }
-    //
-    // const usernameInputHandle = event => {
-    //     setUsernameInput(event.target.value)
-    // }
+
 
     if (authMode === "login") {
         return (
-            // <div className="Auth-form-container">
             <Form onSubmit={loginHandler} className="Auth-form">
                 <div className="Auth-form-content">
                     <h3 className="Auth-form-title">Login</h3>
@@ -65,6 +100,12 @@ export const AuthPage = (props) => {
                         <span className="link-primary" onClick={changeAuthMode}>Register</span>
                     </div>
                     <div className="form-group mt-3">
+                        <label
+                            className="alert alert-danger" role="alert"
+                            hidden={dataIsValid}
+                        >
+                            Invalid Username or Password, Please try again
+                        </label>
                         <label>Username</label>
                         <input
                             type="text"
@@ -91,13 +132,11 @@ export const AuthPage = (props) => {
                     </div>
                 </div>
             </Form>
-            // </div>
         )
     }
 
     return (
-        // <div className="Auth-form-container">
-        <form className="Auth-form">
+        <Form onSubmit={registrationHandler} className="Auth-form">
             <div className="Auth-form-content">
                 <h3 className="Auth-form-title">Register</h3>
                 <div className="text-center">
@@ -105,42 +144,37 @@ export const AuthPage = (props) => {
                     <span className="link-primary" onClick={changeAuthMode}>Login</span>
                 </div>
                 <div className="form-group mt-3">
+                    {/*<label*/}
+                    {/*    className="alert alert-danger" role="alert"*/}
+                    {/*    hidden={dataIsValid}*/}
+                    {/*>*/}
+                    {/*    Invalid Username or Password, Please try again*/}
+                    {/*</label>*/}
                     <label>Username</label>
                     <input
                         type="text"
                         className="form-control mt-1"
                         placeholder="e.g JaneDoe"
-                        onChange={(e) => {
-                            setUsernameInput(e.target.value)
-                        }}
+                        onChange={(event) => setUsernameInput(event.target.value)}
+                        value={usernameInput}
                     />
                 </div>
-                {/*<div className="form-group mt-3">*/}
-                {/*    <label>Email address</label>*/}
-                {/*    <input*/}
-                {/*        type="email"*/}
-                {/*        className="form-control mt-1"*/}
-                {/*        placeholder="Email Address"*/}
-                {/*    />*/}
-                {/*</div>*/}
                 <div className="form-group mt-3">
                     <label>Password</label>
                     <input
                         type="password"
                         className="form-control mt-1"
-                        placeholder="Password"
-                        onChange={(e) => {
-                            setPasswordInput(e.target.value)
-                        }}
+                        placeholder="Enter password"
+                        onChange={(event) => setPasswordInput(event.target.value)}
+                        value={passwordInput}
                     />
                 </div>
                 <div className="d-grid gap-2 mt-3">
-                    <button type="submit" onClick={registrationHandler} className="btn btn-primary">
+                    <Button type="submit" className="btn btn-primary">
                         Submit
-                    </button>
+                    </Button>
                 </div>
             </div>
-        </form>
-        // </div>
+        </Form>
     )
 }

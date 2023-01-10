@@ -10,38 +10,53 @@ namespace ShopElectronics.Services.Services;
 public class ShoppingCartService : IShoppingCartService
 {
     private readonly ICartRepository _cartRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IMapper _autoMapper;
 
-    public ShoppingCartService(ICartRepository cartRepository, IMapper autoMapper)
+    public ShoppingCartService(ICartRepository cartRepository, IMapper autoMapper, IUserRepository userRepository)
     {
         _cartRepository = cartRepository;
         _autoMapper = autoMapper;
+        _userRepository = userRepository;
     }
 
-    public async Task<CartItemViewModel> AddItem(CartItemToAddDto cartItemToAddDto)
+    public async Task<CartItemViewModel> AddItem(List<CartItemToAddDto> cartItemsToAdd)
     {
-        var temp = new CartItem()
+        if (string.IsNullOrEmpty(cartItemsToAdd.First().Username))
         {
-            CartId = cartItemToAddDto.CartId,
-            Qty = cartItemToAddDto.Qty,
-            ProductId = cartItemToAddDto.ProductId
-        };
-        var item = await _cartRepository.AddItem(temp);
+            return null;
+        }
+        
+        var user = await _userRepository.GetUser(cartItemsToAdd.First().Username, String.Empty);
 
-        return _autoMapper.Map<CartItemViewModel>(item);
+        var temp = _autoMapper.Map<ICollection<CartItem>>(cartItemsToAdd);
+        var addResult = await _cartRepository.AddItem(temp, user);
+        
+        if (!addResult) return null;
+        
+        var items = await _cartRepository.GetItems(user.Id);
+        return _autoMapper.Map<CartItemViewModel>(items);
+
     }
 
     public async Task<CartItemViewModel> UpdateQty(CartItemToUpdDto cartItemQtyUpdateDto)
     {
-        var temp = await _cartRepository.UpdateQty(cartItemQtyUpdateDto.CartItemId, cartItemQtyUpdateDto.Qty);
+        if (string.IsNullOrEmpty(cartItemQtyUpdateDto.Username))
+        {
+            return null;
+        }
+        
+        var user = await _userRepository.GetUser(cartItemQtyUpdateDto.Username, String.Empty);
+
+        var temp = await _cartRepository.UpdateQty( user.Cart.Id, cartItemQtyUpdateDto.ProductId, cartItemQtyUpdateDto.Qwt);
         return _autoMapper.Map<CartItemViewModel>(temp);
     }
 
-    public Task<CartItemViewModel> DeleteItem(int id)
-    {
-        _cartRepository.DeleteItem(id);
-        return null;
-    }
+    // public Task<CartItemViewModel> DeleteItem(int id)
+    // {
+    //     _cartRepository.DeleteItem(id);
+    //     return null;
+    // }
 
     public async Task<CartItemViewModel> GetItem(int id)
     {
@@ -49,9 +64,10 @@ public class ShoppingCartService : IShoppingCartService
         return _autoMapper.Map<CartItemViewModel>(temp);
     }
 
-    public async Task<ICollection<CartItemViewModel>> GetItems(int userId)
+    public async Task<ICollection<CartItemViewModel>> GetItems(string username)
     {
-        var temp = await _cartRepository.GetItems(userId);
-        return _autoMapper.Map<ICollection<CartItemViewModel>>(temp);
+        var user = await _userRepository.GetUser(username, String.Empty);
+        var temp = await _cartRepository.GetItems(user.Id);
+        return temp == null ? null : _autoMapper.Map<ICollection<CartItemViewModel>>(temp);
     }
 }

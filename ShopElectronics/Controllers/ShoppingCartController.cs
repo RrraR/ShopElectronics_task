@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using ShopElectronics.Data.Repositories.Interfaces;
 using ShopElectronics.Services.Models.Dto;
 using ShopElectronics.Services.Models.ViewModels;
@@ -17,54 +18,51 @@ namespace ShopElectronics.Controllers
     public class ShoppingCartController : ControllerBase
     {
         private readonly IShoppingCartService _shoppingCartService;
-        private readonly IProductRepository _productRepository;
+        private readonly IOrderService _orderService;
 
-        public ShoppingCartController(IShoppingCartService shoppingCartService, IProductRepository productRepository)
+        public ShoppingCartController(IShoppingCartService shoppingCartService, IOrderService orderService)
         {
             _shoppingCartService = shoppingCartService;
-            _productRepository = productRepository;
+            _orderService = orderService;
         }
         
-        [HttpGet]
-        [Route("/shop/{id}/checkout")]
-        [Authorize]
-        public async Task<IEnumerable<CartItemViewModel>> Checkout(int userId)
+        [HttpPost]
+        [Route("shop/checkout")]
+        // [Authorize]
+        public async Task<IActionResult> Checkout([FromBody]List<OrderItemsToAddDto> OrderItems)
         {
-            return null;
-            // var cartItems = await _shoppingCartService.GetItems(userId);
-            // return cartItems;
-        }
+            var res = await _orderService.AddOrder(OrderItems);
+            if (res)
+            {
+                return Ok();
+            }
 
-        [HttpGet]
-        public async Task<IEnumerable<CartItemViewModel>> GetItems(int userId)
-        {
-            var cartItems = await _shoppingCartService.GetItems(userId);
-            return cartItems;
-        }
-
-        [HttpGet("{id}")]
-        public async Task<CartItemViewModel> GetItem(int id)
-        {
-            var cartItem = await _shoppingCartService.GetItem(id);
-            return cartItem;
+            return BadRequest();
         }
 
         [HttpPost]
-        public async Task<CartItemViewModel> AddItem([FromBody] CartItemToAddDto cartItemToAddDto)
+        [Route("shop/getitems")]
+        [AllowAnonymous]
+        public async Task<IEnumerable<CartItemViewModel>> GetItemsInCart([FromBody] UsernameDto username)
+        {
+            if (string.IsNullOrEmpty(username.Username)) return null;
+            
+            var cartItems = await _shoppingCartService.GetItems(username.Username);
+            return !cartItems.Any() ? null : cartItems;
+        }
+
+        [HttpPost]
+        [Route("shop/additem")]
+        [AllowAnonymous]
+        public async Task<CartItemViewModel> addItems([FromBody] List<CartItemToAddDto> cartItemToAddDto)
         {
             var newCartItem = await _shoppingCartService.AddItem(cartItemToAddDto);
             return newCartItem;
         }
 
-        [HttpDelete("{id:int}")]
-        public async Task<CartItemViewModel> DeleteItem(int id)
-        {
-            var cartItem = await _shoppingCartService.DeleteItem(id);
-            return cartItem;
-        }
-
-        [HttpPatch("{id:int}")]
-        public async Task<CartItemViewModel> UpdateQty(int id, CartItemToUpdDto cartItemToUpdDto)
+        [HttpPatch]
+        [AllowAnonymous]
+        public async Task<CartItemViewModel> UpdateQty([FromBody]CartItemToUpdDto cartItemToUpdDto)
         {
             var cartItem = await _shoppingCartService.UpdateQty(cartItemToUpdDto);
             return cartItem;

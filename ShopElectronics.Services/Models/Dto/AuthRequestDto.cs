@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace ShopElectronics.Services.Models.Dto;
 
-public class LogInRequestDto
+public class AuthRequestDto
 {
     [Required]
     [JsonPropertyName("username")]
@@ -11,5 +11,5 @@ public class LogInRequestDto
 
     [Required]
     [JsonPropertyName("password")]
-    public string Password { get; set; }
+    public string? Password { get; set; }
 }

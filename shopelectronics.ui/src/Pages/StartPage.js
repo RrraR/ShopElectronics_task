@@ -1,9 +1,7 @@
 ﻿import 'bootstrap/dist/css/bootstrap.css';
-import React, {useEffect, useState} from "react";
-import api from "../api";
+import React from "react";
 import Header from "../Components/Header";
 import {AuthPage} from "./AuthPage"
-import {Button} from "react-bootstrap";
 import {Link} from "react-router-dom";
 
 function StartPage() {
