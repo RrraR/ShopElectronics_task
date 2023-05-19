@@ -55,7 +55,7 @@ This project uses MSSQL and MSSQL managment studio 18
 - add products to cart
 - view shop categories, search/filter products in the shop
 - on checkout if regestration is succesfull items that are in your cart will be added to the Database
-- on checkout if login is succesfull items that are in your cart will be added to the Database and if user already had items in the cart before login all the items will be diaplayed
+- on checkout if login is succesfull items that are in your cart will be added to the Database and if user already had items in the cart before login all the items will be displayed
 
 
 #### With login/registration
