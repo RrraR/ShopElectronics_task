@@ -149,9 +149,6 @@ button.badge {
     padding-left: 12%;
     padding-right: 12%;
 }
-.or{
-    padding: 0 20px 0 20px;
-}
 
 .Auth-form-title {
     text-align: center;
@@ -159,6 +156,10 @@ button.badge {
     font-size: 24px;
     color: rgb(34, 34, 34);
     font-weight: 800;
+}
+
+.or{
+    padding: 0 20px 0 20px;
 }
 
 label {

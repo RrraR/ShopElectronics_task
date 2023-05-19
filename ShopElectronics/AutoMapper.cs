@@ -64,10 +64,6 @@ public class AutoMapper: Profile
         CreateMap<OrderStatuses, OrderStatusesDto>()
             .ForMember(d => d.Id, o => o.MapFrom(s => s.Id))
             .ForMember(d => d.Name, o => o.MapFrom(s => s.Status));
-
-
-
-
     }
     
 }

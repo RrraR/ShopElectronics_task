@@ -38,6 +38,7 @@ builder.Services.AddDbContext<ShopElectronicsDbContext>(options =>
     options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IShoppingCartService, ShoppingCartService>();
 builder.Services.AddTransient<IProductCategoryService, ProductCategoryService>();
@@ -72,7 +73,7 @@ builder.Services.AddAuthentication(x =>
         ClockSkew = TimeSpan.FromMinutes(1)
     };
 });
-builder.Services.AddSingleton<JwtAuthManager>(); ;
+builder.Services.AddSingleton<JwtAuthManager>();
 
 
 var app = builder.Build();

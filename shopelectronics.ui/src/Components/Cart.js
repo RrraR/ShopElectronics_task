@@ -41,7 +41,7 @@ export default function Cart(props) {
     }
 
     function CheckoutHandler() {
-        if (username !== null){
+        if (username !== null) {
             alert('Thank you for your purchase!')
             api.post('ShoppingCart/shop/checkout',
                 cartItems.map((item) => ({
@@ -50,13 +50,13 @@ export default function Cart(props) {
                     Qwt: item.qwt
                 }))
             ).then(r => r.status === 200 ? window.location.reload(false) : console.log(r))
-            
-        }else {
+
+        } else {
             openModal()
         }
 
     }
-    
+
 
     return (
         <aside className="block cart">
@@ -104,9 +104,9 @@ export default function Cart(props) {
                             </div>
                         </div>
                         <hr/>
-                        
+
                         <div className="row">
-                            
+
                             <Button
                                 onClick={CheckoutHandler}
                                 // disabled={username === null ? true : false }
@@ -114,7 +114,7 @@ export default function Cart(props) {
                                 Checkout
                             </Button>
 
-                            
+
                             <Modal
                                 isOpen={modalIsOpen}
                                 onAfterOpen={afterOpenModal}
@@ -124,7 +124,7 @@ export default function Cart(props) {
                             >
                                 <div> You must log in to place an order</div>
                                 <AuthPage cartItems={cartItems}>
-                                    
+
                                 </AuthPage>
                             </Modal>
                         </div>

@@ -4,14 +4,15 @@ import Header from "../Components/Header";
 import ProductList from "../Components/ProductList"
 import Cart from "../Components/Cart";
 import {useParams} from "react-router-dom";
-import {usePrevious} from "../utils";
 import Pagination from "../Components/Pagination";
-import {Form} from "react-bootstrap";
+import {Button, Form} from "react-bootstrap";
 
 function ShopPage() {
     const {id} = useParams();
-    const [products, setProducts] = useState([]);
-    const [searchProductList, setSearchProductList] = useState([]);
+    
+    const [productsToDisplay, setProductsToDisplay] = useState([]);
+    const [allProducts, setAllProducts] = useState([]);
+    
     const [cartItems, setCartItems] = useState([]);
     const username = localStorage.getItem("username");
 
@@ -19,20 +20,20 @@ function ShopPage() {
     const [filterQuery, setFilterQuery] = useState('');
     
     const [currentPage, setCurrentPage] = useState(1);
-    const [recordsPerPage] = useState(2);
+    const [recordsPerPage] = useState(3);
     const indexOfLastRecord = currentPage * recordsPerPage;
     const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-    const currentRecords = products.slice(indexOfFirstRecord,
+    const currentRecords = productsToDisplay.slice(indexOfFirstRecord,
         indexOfLastRecord);
-    const nPages = Math.ceil(products.length / recordsPerPage)
-    // let brands = [];
+    const nPages = Math.ceil(productsToDisplay.length / recordsPerPage)
+    const uniqueBrands = [];
     
 
     useEffect(() => {
         api.get(`Product/category/${id}/products`)
             .then(function (response) {
-                setProducts(response.data);
-                setSearchProductList(response.data);
+                setProductsToDisplay(response.data);
+                setAllProducts(response.data);
             })
             .catch(function (error) {
                 // handle error
@@ -41,7 +42,6 @@ function ShopPage() {
             .finally(function () {
                 // always executed
             });
-        // getProducts();
 
         api.post('ShoppingCart/shop/getitems', {
             username: localStorage.getItem("username")
@@ -62,11 +62,13 @@ function ShopPage() {
             });
 
     }, []);
-    
-    // useEffect(()=>{
-    //     brands = [...new Set(searchProductList.flatMap(({brandName}) => brandName))]
-    //     console.log(brands)
-    // }, [searchProductList])
+
+    useEffect(()=>{
+        allProducts.map((item) => {
+            let findItem = uniqueBrands.find((x) => x.brandName === item.brandName);
+            if (!findItem) uniqueBrands.push(item);
+        });
+    }, [allProducts])
     
 
     const onAdd = (product) => {
@@ -128,9 +130,9 @@ function ShopPage() {
         }).then(r => console.log(r))
     }
 
-    function search(productsToSearch) {
-        const search_parameters = ["name", "description", "brandName"];
-        return productsToSearch.filter(
+    function search(productsToDisplay) {
+        const search_parameters = ["name", "description"];
+        return productsToDisplay.filter(
             (product) =>
                 search_parameters.some((parameter) =>
                     product[parameter].toString().toLowerCase().includes(searchQuery))
@@ -139,23 +141,21 @@ function ShopPage() {
 
     useEffect(()=>
     {
-        const data = Object.values(searchProductList)
-        setProducts(search(data))
+        const data = Object.values(allProducts)
+        setProductsToDisplay(search(data))
     }, [searchQuery])
     
     
     useEffect(()=>
     {
-        const data = Object.values(searchProductList)
-        setProducts(filter(data))
+        const data = Object.values(allProducts)
+        setProductsToDisplay(filter(data))
     }, [filterQuery])
     
     
-
-
-    function filter(productsToFilter) {
+    function filter(productsToDisplay) {
         const filter_parameters = ["brandName"];
-        return productsToFilter.filter(
+        return productsToDisplay.filter(
             (product) =>
                 filter_parameters.some((parameter) =>
                     product[parameter].toString().toLowerCase().includes(filterQuery))
@@ -166,6 +166,21 @@ function ShopPage() {
         <div className="App">
             <Header countCartItems={cartItems.length}></Header>
 
+            <Button
+            onClick={() => console.log(allProducts)}>
+                allProducts
+            </Button>
+
+            <Button
+                onClick={() => console.log(productsToDisplay)}>
+                productsToDisplay
+            </Button>
+
+            <Button
+                onClick={() => console.log(uniqueBrands)}>
+                uniqueBrands
+            </Button>
+            
             <div>
                 <input
                     name="search-form"
@@ -181,9 +196,9 @@ function ShopPage() {
                     value={filterQuery}
                     aria-label="Default select example">
                     <option value=''>Show all</option>
-                    {searchProductList.map(
+                    {uniqueBrands.map(
                         c => (
-                            <option key={c.productId} value={c.brandName.toString().toLowerCase()}>{c.brandName.toString().toLowerCase()}</option>))
+                            <option key={c.productId} value={c.brandName.toString()}>{c.brandName.toString()}</option>))
                     }
                 </Form.Select>
 
@@ -193,9 +208,7 @@ function ShopPage() {
             <div className="mainRow">
 
                 <ProductList
-                    products={
-                        currentRecords
-                    }
+                    products={currentRecords}
                     onAdd={onAdd}
                 ></ProductList>
                 <Cart
